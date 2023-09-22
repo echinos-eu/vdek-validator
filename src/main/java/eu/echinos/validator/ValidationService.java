@@ -21,13 +21,13 @@ import org.hl7.fhir.r4.model.HumanName.NameUse;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.StringType;
 
-public class ValidationProvider extends FhirValidator {
+public class ValidationService extends FhirValidator {
 
   public static void main(String[] args) throws IOException {
     Locale.setDefault(Locale.ENGLISH);
     FhirContext ctx = FhirContext.forR4Cached();
     IParser iParser = ctx.newJsonParser().setPrettyPrint(true);
-    ValidationProvider validationProvider = new ValidationProvider(ctx);
+    ValidationService validationProvider = new ValidationService(ctx);
 
     Patient patient = newPatient();
     ValidationResult validationResult = validationProvider.validateWithResult(patient);
@@ -58,7 +58,7 @@ public class ValidationProvider extends FhirValidator {
     return patient;
   }
 
-  public ValidationProvider(FhirContext ctx) throws IOException {
+  public ValidationService(FhirContext ctx) throws IOException {
     super(ctx);
 
     ValidationSupportChain supportChain = new ValidationSupportChain();
