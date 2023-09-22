@@ -5,6 +5,7 @@ import ca.uhn.fhir.context.support.DefaultProfileValidationSupport;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.validation.FhirValidator;
 import ca.uhn.fhir.validation.ValidationResult;
+import java.io.IOException;
 import org.hl7.fhir.common.hapi.validation.support.CachingValidationSupport;
 import org.hl7.fhir.common.hapi.validation.support.CommonCodeSystemsTerminologyService;
 import org.hl7.fhir.common.hapi.validation.support.InMemoryTerminologyServerValidationSupport;
@@ -16,7 +17,7 @@ import org.hl7.fhir.r4.model.Patient;
 
 public class ValidationProvider extends FhirValidator {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
     FhirContext ctx = FhirContext.forR4Cached();
     IParser iParser = ctx.newJsonParser().setPrettyPrint(true);
     ValidationProvider validationProvider = new ValidationProvider(ctx);
@@ -29,7 +30,7 @@ public class ValidationProvider extends FhirValidator {
     System.out.println(iParser.encodeResourceToString(validationResult.toOperationOutcome()));
   }
 
-  public ValidationProvider(FhirContext ctx) {
+  public ValidationProvider(FhirContext ctx) throws IOException {
     super(ctx);
 
     ValidationSupportChain supportChain = new ValidationSupportChain();
@@ -42,7 +43,11 @@ public class ValidationProvider extends FhirValidator {
     supportChain.addValidationSupport(new SnapshotGeneratingValidationSupport(ctx));
 
     NpmPackageValidationSupport npmPackageValidationSupport = new NpmPackageValidationSupport(ctx);
-
+    npmPackageValidationSupport.loadPackageFromClasspath(
+        "classpath:packages/de.basisprofil.r4-1.4.0.tgz");
+    npmPackageValidationSupport.loadPackageFromClasspath(
+        "classpath:packages/de.gematik.isik-basismodul-3.0.0.tgz");
+    supportChain.addValidationSupport(npmPackageValidationSupport);
 
     //cache validations
     CachingValidationSupport cache = new CachingValidationSupport(supportChain);
