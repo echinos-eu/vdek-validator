@@ -6,6 +6,7 @@ import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.validation.FhirValidator;
 import ca.uhn.fhir.validation.ValidationResult;
 import java.io.IOException;
+import java.util.Locale;
 import org.hl7.fhir.common.hapi.validation.support.CachingValidationSupport;
 import org.hl7.fhir.common.hapi.validation.support.CommonCodeSystemsTerminologyService;
 import org.hl7.fhir.common.hapi.validation.support.InMemoryTerminologyServerValidationSupport;
@@ -18,6 +19,7 @@ import org.hl7.fhir.r4.model.Patient;
 public class ValidationProvider extends FhirValidator {
 
   public static void main(String[] args) throws IOException {
+    Locale.setDefault(Locale.ENGLISH);
     FhirContext ctx = FhirContext.forR4Cached();
     IParser iParser = ctx.newJsonParser().setPrettyPrint(true);
     ValidationProvider validationProvider = new ValidationProvider(ctx);
