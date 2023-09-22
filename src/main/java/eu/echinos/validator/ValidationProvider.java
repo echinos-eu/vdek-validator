@@ -14,7 +14,12 @@ import org.hl7.fhir.common.hapi.validation.support.NpmPackageValidationSupport;
 import org.hl7.fhir.common.hapi.validation.support.SnapshotGeneratingValidationSupport;
 import org.hl7.fhir.common.hapi.validation.support.ValidationSupportChain;
 import org.hl7.fhir.common.hapi.validation.validator.FhirInstanceValidator;
+import org.hl7.fhir.r4.model.CodeableConcept;
+import org.hl7.fhir.r4.model.DateType;
+import org.hl7.fhir.r4.model.Enumerations.AdministrativeGender;
+import org.hl7.fhir.r4.model.HumanName.NameUse;
 import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.StringType;
 
 public class ValidationProvider extends FhirValidator {
 
@@ -23,13 +28,34 @@ public class ValidationProvider extends FhirValidator {
     FhirContext ctx = FhirContext.forR4Cached();
     IParser iParser = ctx.newJsonParser().setPrettyPrint(true);
     ValidationProvider validationProvider = new ValidationProvider(ctx);
-    Patient patient = new Patient();
-    patient.setActive(true);
-    patient.getMeta()
-        .addProfile("https://gematik.de/fhir/isik/v3/Basismodul/StructureDefinition/ISiKPatient");
 
+    Patient patient = newPatient();
     ValidationResult validationResult = validationProvider.validateWithResult(patient);
     System.out.println(iParser.encodeResourceToString(validationResult.toOperationOutcome()));
+  }
+
+  private static Patient newPatient() {
+    Patient patient = new Patient();
+    patient.addName().addGiven("Patrick").addGiven("Fritz")
+        .setUse(NameUse.OFFICIAL);
+    StringType familyElement = patient.getNameFirstRep().getFamilyElement();
+    familyElement.setValue("Werner");
+    familyElement.addExtension()
+        .setUrl("http://hl7.org/fhir/StructureDefinition/humanname-own-name")
+        .setValue(new StringType("Werner"));
+    String identSystem = "http://echinos.eu/fhir/sid/PatientIdentifier";
+    String identValue = "012598419642sfdf34";
+    CodeableConcept mrcc = new CodeableConcept();
+    mrcc.addCoding().setSystem("http://terminology.hl7.org/CodeSystem/v2-0203")
+        .setCode("MR");
+    patient.addIdentifier().setSystem(identSystem).setValue(identValue).setType(mrcc);
+    patient.setGender(AdministrativeGender.MALE);
+    patient.setActive(true);
+    patient.setBirthDateElement(new DateType("1980-01-01"));
+
+    patient.getMeta()
+        .addProfile("https://gematik.de/fhir/isik/v3/Basismodul/StructureDefinition/ISiKPatient");
+    return patient;
   }
 
   public ValidationProvider(FhirContext ctx) throws IOException {
