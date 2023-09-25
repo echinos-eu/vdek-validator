@@ -7,6 +7,7 @@
   <groupId>org.example</groupId>
   <artifactId>VDEKValidatorDemo</artifactId>
   <version>1.0-SNAPSHOT</version>
+  <packaging>war</packaging>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -14,11 +15,6 @@
     <spring.version>2.6.2</spring.version>
   </properties>
 
-  <parent>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.6.2</version>
-  </parent>
   <dependencies>
     <dependency>
       <groupId>ca.uhn.hapi.fhir</groupId>
@@ -62,25 +58,20 @@
       <version>2.7</version>
     </dependency>
     <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-web</artifactId>
-      <version>${spring.version}</version>
-      <!--      <exclusions>-->
-      <!--        <exclusion>-->
-      <!--          <groupId>org.springframework.boot</groupId>-->
-      <!--          <artifactId>spring-boot-starter-logging</artifactId>-->
-      <!--        </exclusion>-->
-      <!--      </exclusions>-->
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-log4j2</artifactId>
-      <version>${spring.version}</version>
-    </dependency>
-    <dependency>
       <groupId>com.helger</groupId>
       <artifactId>ph-schematron</artifactId>
       <version>5.6.5</version>
+    </dependency>
+    <!--
+HAPI-FHIR uses Logback for logging support. The logback library is included
+automatically by Maven as a part of the hapi-fhir-base dependency, but you
+also need to include a logging library. Logback is used here, but log4j
+would also be fine.
+-->
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>1.4.8</version>
     </dependency>
   </dependencies>
 
@@ -90,23 +81,11 @@
         <plugin>
           <groupId>org.eclipse.jetty</groupId>
           <artifactId>jetty-maven-plugin</artifactId>
-          <version>9.1.6.v20160112</version>
+          <version>10.0.14</version>
         </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>${spring.version}</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>repackage</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>

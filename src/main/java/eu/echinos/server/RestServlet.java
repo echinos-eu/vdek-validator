@@ -10,7 +10,7 @@ import javax.servlet.annotation.WebServlet;
 public class RestServlet extends RestfulServer {
 
   public RestServlet() {
-    super(FhirContext.forR4Cached());
+    super(FhirContext.forR4());
   }
 
   @Override
