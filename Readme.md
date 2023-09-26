@@ -1,1 +1,3 @@
-https://docs.google.com/presentation/d/1uCi9ks5ME8Lt9CwNwvB-hx_ggfSpT7kgXZ6t4v-1G7c/edit?usp=sharing
+# Validator Plain Server Demo
+
+To start: `mvn spring-boot:run`   
